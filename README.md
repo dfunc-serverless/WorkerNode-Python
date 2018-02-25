@@ -1,2 +1,4 @@
 # SlaveNode
-Blah blah for rt now!
+---
+Dependencies:
+Docker[embed]https://pypi.python.org/pypi/docker[/embed]
