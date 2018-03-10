@@ -1,4 +1,6 @@
 import docker
+# https://pypi.python.org/pypi/docker
+# http://docker-py.readthedocs.io/en/stable/index.html 
 import subprocess
 
 # connet to docker, 
@@ -38,15 +40,26 @@ class DockerContainer:
 		return self.container
 
 
-def dockerExist():
+	def dockerExist():
+		"""
+			check if Docker exist
+		"""
+		command = "docker -v".split()
+		return 0 == subprocess.call(command)
+
+
+
+
+
+class DockerComputation:
+	def __init__(self, ):
+		client = docker.from_env()
+
+	def computePowerAva():
 	"""
-		check is Docker exist
+	Report comput power based on RAM, CPU, 
 	"""
-	command = "docker -v".split()
-	return 0 == subprocess.call(command)
-
-
-
+	
 
 
 
