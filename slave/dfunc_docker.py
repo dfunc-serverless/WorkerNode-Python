@@ -40,7 +40,7 @@ class DockerContainer:
 		return self.container
 
 
-	def dockerExist():
+	def dockerExist(self):
 		"""
 			check if Docker exist
 		"""
@@ -55,10 +55,11 @@ class DockerComputation:
 	def __init__(self, ):
 		client = docker.from_env()
 
-	def computePowerAva():
-	"""
-	Report comput power based on RAM, CPU, 
-	"""
+	def computePowerAva(self):
+		"""
+			Report comput power based on RAM, CPU
+		"""
+		return
 	
 
 

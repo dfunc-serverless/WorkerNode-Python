@@ -1,4 +1,4 @@
-from slave.docker import DockerContainer
+from slave.dfunc_docker import DockerContainer
 
 if __name__ == "__main__":
 	docker = DockerContainer("ubuntu")
