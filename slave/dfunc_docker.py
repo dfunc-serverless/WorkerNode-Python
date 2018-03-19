@@ -1,18 +1,18 @@
-import docker
-import subprocess
+"""
+TODO:connet to docker, 
+download image,
+run it ,
+calcualte compute time,
+able to quit,
+send STDOUT back to the server
 
+dependencies: Docker installed, Python 2.7 or 3.
+"""
+import docker
+
+import subprocess
 from enum import Enum
 
-
-# connet to docker, 
-# download image
-# run it 
-# calcualte compute time
-# able to quit
-# send STDOUT back to the server
-
-# dependencies: Docker installed, Python 2.7 or 3.
-# sign in to docker hub
 
 class compute(Enum):
 	CPU = "NCPU"
