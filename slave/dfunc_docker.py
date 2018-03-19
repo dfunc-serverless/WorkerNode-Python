@@ -29,9 +29,11 @@ class globleVar:
 client = docker.from_env() # Connect to Docker
 
 class DockerContainer:
-	def __init__(self, image_name):
+	def __init__(self, image_name, tag="latest"):
 		self.image_name = image_name
 		self.container = None
+		self.tag = tag
+		client.images.pull("%s:%s" % (image_name, tag))
 
 	def run(self, command=None):
 		"""
