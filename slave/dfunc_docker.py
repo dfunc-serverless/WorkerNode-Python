@@ -1,6 +1,4 @@
 import docker
-# https://pypi.python.org/pypi/docker
-# http://docker-py.readthedocs.io/en/stable/index.html 
 import subprocess
 
 from enum import Enum
@@ -61,9 +59,9 @@ class DockerContainer:
 
 	def get_container(self):
 		return self.container
-
-	def computeAccumStats(self):
-		return self.container.cpu_period(2)
+	
+	def delete(self):
+		self.container.remove(v=True,force=True)
 
 
 def dockerExist():
@@ -109,10 +107,3 @@ class DockerQuit:
 			# For some reason there are two, this is to delete 
 			# the second one that is only able to be deltete by id number
 			#client.images.remove(image=_id,force=True) 
-
-		
-
-
-
-
-

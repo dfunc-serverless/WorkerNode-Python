@@ -1,2 +1,5 @@
+# https://pypi.python.org/pypi/docker
+# http://docker-py.readthedocs.io/en/stable/index.html 
 docker
+# https://api.mongodb.com/python/current/
 pymongo
