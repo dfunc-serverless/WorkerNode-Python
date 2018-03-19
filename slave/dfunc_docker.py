@@ -43,12 +43,15 @@ class DockerContainer:
 			self.container = client.containers.run(self.image_name, detach=True)
 		else:
 			self.container = client.containers.run(self.image_name, command, detach=True)
-		container_stats = self.container.stats(decode=True)
+			
 		globleVar.container_list.append(self.container)
 		globleVar.imageName_list.append(self.image_name)
 		globleVar.imageID_list.append(self.container.id)
-		for x in container_stats:
-			print (x)
+
+	def containerInfo(self):
+		""" Get the information of total Useage"""
+		return self.container.stats(stream=False,decode=True)
+	
 
 	def stop(self):
 		self.container.stop()
@@ -87,7 +90,7 @@ class DockerComputation:
 		locInfo = client.info()
 		#print locInfo
 		cpuNmem = []
-		if (locInfo.has_key(compute.CPU.value) & locInfo.has_key(compute.MEM.value)):
+		if (compute.CPU.value in locInfo and compute.MEM.value in locInfo):
 			cpuNmem = [locInfo[compute.CPU.value], locInfo[compute.MEM.value]]
 		return cpuNmem
 
