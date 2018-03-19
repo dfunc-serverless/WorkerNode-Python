@@ -102,7 +102,7 @@ class DockerComputation:
 class DockerQuit:
 	"""delete images created"""
 	@staticmethod
-	def rmAll():
+	def rmAllImage():
 		for _image_name in  globleVar.imageName_list:
 			_id = client.images.get(_image_name).id
 			client.images.remove(image=_image_name,force=True)
