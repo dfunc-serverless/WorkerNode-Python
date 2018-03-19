@@ -16,7 +16,7 @@ if(ddocker.dockerExist()):
 	#print hello.containerInfo()
 	hello.stop()
 	# print hello.containerInfo()
-	ddocker.DockerQuit.rmAll()
+	ddocker.DockerQuit.rmAllImage()
 	#stats = ddocker.DockerComputation.computeAccumStats()
 
 	#print stats
