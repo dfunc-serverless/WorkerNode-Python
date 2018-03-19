@@ -3,6 +3,9 @@ import docker
 # http://docker-py.readthedocs.io/en/stable/index.html 
 import subprocess
 
+from enum import Enum
+
+
 # connet to docker, 
 # download image
 # run it 
@@ -39,29 +42,49 @@ class DockerContainer:
 	def get_container(self):
 		return self.container
 
-
-	def dockerExist():
-		"""
-			check if Docker exist
-		"""
-		command = "docker -v".split()
-		return 0 == subprocess.call(command)
+	def computeAccumStats(self):
+		return self.container.cpu_period(2)
 
 
+def dockerExist():
+	"""
+		check if Docker exist
+	"""
+	command = "docker -v".split()
+	return 0 == subprocess.call(command)
 
 
+class compute(Enum):
+	CPU = "NCPU"
+	MEM = 'MemTotal'
 
+# computePowerAva defines images this containner can accomondate
+# computePowerUsed claim the price
 class DockerComputation:
-	def __init__(self, ):
-		client = docker.from_env()
+	def __init__(self, image_ID):
+		self.image_name = image_name
+		self.container = None
 
+
+
+
+	@staticmethod
 	def computePowerAva():
-	"""
-	Report comput power based on RAM, CPU, 
-	"""
-	
+		"""
+		Report comput power based on RAM, CPU, 
+		use "Docker Info" equivalent
+		"""
+		locInfo = client.info()
+		print locInfo
+		cpuNmem = []
+		if (locInfo.has_key(compute.CPU.value) & locInfo.has_key(compute.MEM.value)):
+			cpuNmem = [locInfo[compute.CPU.value], locInfo[compute.MEM.value]]
+		return cpuNmem
 
-
+	# @staticmethod
+	# def computeAccumStats():
+	# 	accumInfo = client.cpu_period()
+	# 	return accumInfo
 
 
 
