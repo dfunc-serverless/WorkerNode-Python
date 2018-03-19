@@ -16,6 +16,15 @@ from enum import Enum
 # dependencies: Docker installed, Python 2.7 or 3.
 # sign in to docker hub
 
+class compute(Enum):
+	CPU = "NCPU"
+	MEM = 'MemTotal'
+
+class globleVar:
+	imageName_list = []
+	imageID_list = []
+	container_list = []
+	container_stats = []
 
 client = docker.from_env() # Connect to Docker
 
@@ -32,6 +41,12 @@ class DockerContainer:
 			self.container = client.containers.run(self.image_name, detach=True)
 		else:
 			self.container = client.containers.run(self.image_name, command, detach=True)
+		container_stats = self.container.stats(decode=True)
+		globleVar.container_list.append(self.container)
+		globleVar.imageName_list.append(self.image_name)
+		globleVar.imageID_list.append(self.container.id)
+		for x in container_stats:
+			print (x)
 
 	def stop(self):
 		self.container.stop()
@@ -54,19 +69,12 @@ def dockerExist():
 	return 0 == subprocess.call(command)
 
 
-class compute(Enum):
-	CPU = "NCPU"
-	MEM = 'MemTotal'
-
 # computePowerAva defines images this containner can accomondate
 # computePowerUsed claim the price
 class DockerComputation:
 	def __init__(self, image_ID):
-		self.image_name = image_name
+		self.image_name = image_ID
 		self.container = None
-
-
-
 
 	@staticmethod
 	def computePowerAva():
@@ -75,7 +83,7 @@ class DockerComputation:
 		use "Docker Info" equivalent
 		"""
 		locInfo = client.info()
-		print locInfo
+		#print locInfo
 		cpuNmem = []
 		if (locInfo.has_key(compute.CPU.value) & locInfo.has_key(compute.MEM.value)):
 			cpuNmem = [locInfo[compute.CPU.value], locInfo[compute.MEM.value]]
@@ -86,6 +94,18 @@ class DockerComputation:
 	# 	accumInfo = client.cpu_period()
 	# 	return accumInfo
 
+class DockerQuit:
+	"""delete images created"""
+	@staticmethod
+	def rmAll():
+		for _image_name in  globleVar.imageName_list:
+			_id = client.images.get(_image_name).id
+			client.images.remove(image=_image_name,force=True)
+			# For some reason there are two, this is to delete 
+			# the second one that is only able to be deltete by id number
+			#client.images.remove(image=_id,force=True) 
+
+		
 
 
 
