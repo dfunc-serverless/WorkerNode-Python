@@ -10,6 +10,6 @@ if __name__ == "__main__":
 	#hello-world
 	t = ddocker.DockerComputation.computePowerAva()
 	print(t)
-	stats = ddocker.DockerComputation.computeAccumStats()
+#stats = ddocker.DockerComputation.computeAccumStats()
 
 
