@@ -1,4 +1,4 @@
-import slave.dfunc_docker as ddocker
+import worker.docker as ddocker
 
 if __name__ == "__main__":
 	# docker = DockerContainer("ubuntu")
