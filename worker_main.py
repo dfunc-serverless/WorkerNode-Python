@@ -1,4 +1,4 @@
-import slave.dfunc_docker as ddocker
+import worker.docker as ddocker
 from time import sleep
 #from goto import with_goto
 
