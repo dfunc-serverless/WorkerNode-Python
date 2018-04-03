@@ -25,6 +25,13 @@ class MongoInterface:
 			return result[0]
 		return None
 
+	def getjob_first(self,db_name,collection):
+		"""Get first job regardless of requirments, Greedy"""
+		result = self.client.db_name.collection
+		if result.count()>1:
+			return result[0]
+		return None
+
 	def mark_job(self,db_name,collection,job_id,marking = {}):
 		"""Mark a job a Handdeld or Free"""
 		return self.client.db_name.collection.update_one({'_id':job_id}, {"$set": marking}, upsert=True)
