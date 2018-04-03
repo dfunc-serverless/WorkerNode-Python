@@ -26,7 +26,12 @@ class MongoInterface:
 		return None
 
 	def mark_job(self,db_name,collection,job_id,marking = {}):
+		"""Mark a job a Handdeld or Free"""
 		return self.client.db_name.collection.update_one({'_id':job_id}, {"$set": marking}, upsert=True)
+
+	def delete_job(self,db_name,collection,job_id):
+		"""Delete a job only after it is done"""
+		self.client.db_name.collection.delete_one({'_id': job_id})
 
 	@staticmethod
 	def getjob_id(jobitem):
