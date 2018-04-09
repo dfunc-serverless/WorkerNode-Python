@@ -3,10 +3,18 @@ TODO:
 Listening to Server call
 Get Job ID
 Get Triger 
+
 Get Image name
 Get Triger
 dependencies: Docker installed, Python 2.7 or 3.
 """
+
+
+import argparse
+import time
+
+from google.cloud import pubsub_v1
+
 def receive_messages(project, subscription_name):
     """Receives messages from a pull subscription."""
     subscriber = pubsub_v1.SubscriberClient()
@@ -24,3 +32,6 @@ def receive_messages(project, subscription_name):
     print('Listening for messages on {}'.format(subscription_path))
     while True:
         time.sleep(60)
+
+if __name__ == "__main__":
+    receive_messages("place holder","what")
