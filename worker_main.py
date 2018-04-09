@@ -1,4 +1,4 @@
-import worker.docker as ddocker
+import worker.ddocker as ddocker
 from time import sleep
 #from goto import with_goto
 
@@ -12,7 +12,7 @@ def main():
             print("Please open Docker daemon before running dFunc")
             exit(1)
 
-        hello = ddocker.DockerContainer('helloworld')
+        hello = ddocker.DockerContainer('hello-world')
         hello.run()
         # hello.registerContainer()
         sleep(10)
