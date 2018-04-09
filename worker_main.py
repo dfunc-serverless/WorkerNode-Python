@@ -12,7 +12,7 @@ def main():
             print("Please open Docker daemon before running dFunc")
             exit(1)
 
-        hello = ddocker.DockerContainer('elasticsearch')
+        hello = ddocker.DockerContainer('helloworld')
         hello.run()
         # hello.registerContainer()
         sleep(10)

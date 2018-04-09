@@ -6,7 +6,7 @@ from time import sleep
 if(ddocker.dockerExist()):	
 	t = ddocker.DockerComputation.computePowerAva()
 	print(t)
-	hello = ddocker.DockerContainer('elasticsearch')
+	hello = ddocker.DockerContainer('helloworld')
 	hello.run()
 	# hello.registerContainer()
 	sleep(10)
