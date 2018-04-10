@@ -38,9 +38,9 @@ class DockerContainer:
 			Load and run Docker Image
 		"""
 		if command is None:
-			self.container = client.containers.run(self.image_name, detach=True)
+			self.container = client.containers.run(self.image_name, self.tag, detach=True)
 		else:
-			self.container = client.containers.run(self.image_name, command, detach=True)
+			self.container = client.containers.run(self.image_name, self.tag, command, detach=True)
 			
 		globleVar.container_list.append(self.container)
 		globleVar.imageName_list.append(self.image_name)

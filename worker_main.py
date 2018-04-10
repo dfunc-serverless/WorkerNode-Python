@@ -18,7 +18,7 @@ def signal_handler(signal, frame):
 
 #@with_goto
 def main():
-    if(~ddocker.dockerExist()):
+    if(not ddocker.dockerExist()):
         print("Please install Docker")
         exit(1)
 
@@ -35,7 +35,7 @@ def main():
         
         message  = listener.workerMain()
 
-        hello = ddocker.DockerContainer(message.image_name)
+        hello = ddocker.DockerContainer(message.image_name['name'],message.image_name['tag'])
         hello.run()
         # hello.registerContainer()
     #	print hello.container.logs()
