@@ -1,21 +1,43 @@
 import worker.ddocker as ddocker
 from time import sleep
 #from goto import with_goto
+import worker.listener as listener
+from enum import Enum
 
+class mediator(Enum):
+    job_name = "name"
+    file_url = "file"
+    image_dict = "image"
+    user_id = "user"
+
+# allow keyboard interrup
+import sys, signal
+def signal_handler(signal, frame):
+    print("\nThank you for choosing dfunc")
+    sys.exit(0)
 
 #@with_goto
 def main():
-    if(ddocker.dockerExist()):	
-        try:
-            t = ddocker.DockerComputation.computePowerAva()
-        except Exception:
-            print("Please open Docker daemon before running dFunc")
-            exit(1)
+    if(~ddocker.dockerExist()):
+        print("Please install Docker")
+        exit(1)
 
-        hello = ddocker.DockerContainer('hello-world')
+
+    try:
+        t = ddocker.DockerComputation.computePowerAva()
+    except Exception:
+        print("Please open Docker daemon before running dFunc")
+        exit(1)
+
+    signal.signal(signal.SIGINT, signal_handler)
+    print("Exit dfunc with Ctrl+c")
+    while (True):
+        
+        message  = listener.workerMain()
+
+        hello = ddocker.DockerContainer(message.image_name)
         hello.run()
         # hello.registerContainer()
-        sleep(10)
     #	print hello.container.logs()
         print hello.get_log()
         #print(hello.get_log())
@@ -26,8 +48,7 @@ def main():
         #stats = ddocker.DockerComputation.computeAccumStats()
 
         #print stats
-    else:
-        print("Please install Docker")
+        
         
 if __name__ == "__main__":
     main()

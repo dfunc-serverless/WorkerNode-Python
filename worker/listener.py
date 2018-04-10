@@ -26,31 +26,39 @@ import time
 import json
 import os.path
 from google.cloud import pubsub_v1
+from enum import Enum
 
 # Global Variables
-GoogleAPISecretPath = './GoogleAPISecret.json'
-workerAPIkeyPath = './workerAPIkey.json'
+class path(Enum):
+    GoogleAPISecretPath = './GoogleAPISecret.json'
+    workerAPIkeyPath = './workerAPIkey.json'
+
+class mediator(Enum):
+    job_name = "name"
+    file_url = "file"
+    image_dict = "image"
+    user_id = "user"
 
 def setUserkey():
-    workerAPIkey = raw_input('Input APIkey (Aquire your APIkey at "http://www.defunc.tech"):')
-    with open(workerAPIkeyPath, 'w') as outfile:
+    workerAPIkey = raw_input('Input APIkey (Aquire your APIkey at "http://www.dfunc.tech"):')
+    with open(path.workerAPIkeyPath, 'w') as outfile:
         json.dump(workerAPIkey, outfile)
     return workerAPIkey
 
 def setGoogleAPI():
-    googleAPIkey = raw_input('Input absolute path (including filename) of Google JSON secret downloaded from "http://www.defunc.tech" on register):')
-    os.rename(googleAPIkey, GoogleAPISecretPath)
-    if (keyexist(GoogleAPISecretPath)):
+    googleAPIkey = raw_input('Input absolute path (including filename) of Google JSON secret downloaded from "http://www.dfunc.tech" on register):')
+    os.rename(googleAPIkey, path.GoogleAPISecretPath)
+    if (keyexist(path.GoogleAPISecretPath)):
         getGoogleAPI()
 
 def getGoogleAPI():
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath(GoogleAPISecretPath)
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath(path.GoogleAPISecretPath)
 
 def keyexist(key):
     return os.path.exists(key) 
 
 def getUserkey():
-    return json.load(open(workerAPIkeyPath))
+    return json.load(open(path.workerAPIkeyPath))
 
 def receive_messages_with_custom_attributes(project, subscription_name):
     """Receives messages from a pull subscription."""
@@ -59,12 +67,8 @@ def receive_messages_with_custom_attributes(project, subscription_name):
         project, subscription_name)
 
     def callback(message):
-        print('Received message: {}'.format(message.data)) # comment out later
-        if message.attributes:
-            print('Attributes:') # comment out later
-            for key in message.attributes:
-                value = message.attributes.get(key)
-                print('{}: {}'.format(key, value)) # comment out later
+        if (message.mediator.file_url!='' and message.mediator.image_dict!=''):
+            return message
         message.ack()
 
     subscriber.subscribe(subscription_path, callback=callback)
@@ -77,20 +81,19 @@ def receive_messages_with_custom_attributes(project, subscription_name):
 
 def workerMain():
     # worker ID 
-    if (keyexist(workerAPIkeyPath)):
+    if (keyexist(path.workerAPIkeyPath)):
         workerAPIkey = getUserkey()
     else:
         workerAPIkey = setUserkey()
         pass
     print "Your Worker ID: " + workerAPIkey
     # google API secret
-    if (keyexist(GoogleAPISecretPath)):
+    if (keyexist(path.GoogleAPISecretPath)):
         getGoogleAPI()
     else:
         setGoogleAPI()
     # Start listening
-    receive_messages_with_custom_attributes('dfunc',workerAPIkey)
-
+    return receive_messages_with_custom_attributes('dfunc',workerAPIkey)
 
 
 
