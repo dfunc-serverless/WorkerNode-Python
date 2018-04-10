@@ -40,6 +40,8 @@ def main():
         # hello.registerContainer()
     #	print hello.container.logs()
         print hello.get_log()
+
+        
         #print(hello.get_log())
         #print hello.containerInfo()
         hello.stop()

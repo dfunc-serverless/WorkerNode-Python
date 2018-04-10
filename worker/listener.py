@@ -95,6 +95,10 @@ def workerMain():
     # Start listening
     return receive_messages_with_custom_attributes('dfunc',workerAPIkey)
 
+def reply(message):
+    '''send messages back'''
+    pass
+
 
 
 
