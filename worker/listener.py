@@ -26,28 +26,28 @@ import time
 import json
 import os.path
 from google.cloud import pubsub_v1
-from enum import Enum
 
+import requests
 # Global Variables
-
-GoogleAPISecretPath = './GoogleAPISecret.json'
-workerAPIkeyPath = "./workerAPIkey.json"
+GoogleAPISecretPath = './SubscribeGoogleSecret.json'
+workerCred = './workerCred.json'
+curlURL = 'http://localhost:8888/worker/' # publish 'http://www.dfunc.tech/worker/'
 job_name = "name"
 file_url = "file"
 image_dict = "image"
 user_id = "user"
 
-def setUserkey():
-    workerAPIkey = raw_input('Input APIkey (Aquire your APIkey at "http://www.dfunc.tech"):')
-    with open(workerAPIkeyPath, 'w') as outfile:
-        json.dump(workerAPIkey, outfile)
-    return workerAPIkey
+# test id 5accf9b83e84b203a54c0c38
 
-def setGoogleAPI():
-    googleAPIkey = raw_input('Input absolute path (including filename) of Google JSON secret downloaded from "http://www.dfunc.tech" on register):')
-    os.rename(googleAPIkey, GoogleAPISecretPath)
-    if (keyexist(GoogleAPISecretPath)):
-        getGoogleAPI()
+# def setUserkey():
+#     workerAPIkey = raw_input('Input APIkey (Aquire your APIkey at "http://www.dfunc.tech"):')
+#     with open(workerAPIkeyPath, 'w') as outfile:
+#         json.dump(workerAPIkey, outfile)
+#     return workerAPIkey
+
+def setGoogleAPI(GoogleAPISecret):
+    with open(GoogleAPISecretPath, 'w') as outfile:
+        json.dump(GoogleAPISecret, outfile)
 
 def getGoogleAPI():
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath(GoogleAPISecretPath)
@@ -55,8 +55,8 @@ def getGoogleAPI():
 def keyexist(key):
     return os.path.exists(key) 
 
-def getUserkey():
-    return json.load(open(workerAPIkeyPath))
+# def getUserkey():
+#     return json.load(open(workerCred)).worker_id
 
 def receive_messages_with_custom_attributes(project, subscription_name):
     """Receives messages from a pull subscription."""
@@ -65,7 +65,7 @@ def receive_messages_with_custom_attributes(project, subscription_name):
         project, subscription_name)
 
     def callback(message):
-        if (message.mediator.file_url!='' and message.mediator.image_dict!=''):
+        if (message.file_url!='' and message.image_dict!=''):
             return message
         message.ack()
 
@@ -77,21 +77,33 @@ def receive_messages_with_custom_attributes(project, subscription_name):
     while True:
         time.sleep(60)
 
+def setCredFromWorkerID():
+    PARAMS = raw_input('Input APIkey (Aquire your APIkey at "http://www.dfunc.tech"):')
+    workerAPIkey = requests.get(url = 'http://localhost:8888/worker/', params = '5accf9b83e84b203a54c0c38').json()
+    with open(workerCred, 'w') as outfile:
+        json.dump(workerAPIkey, outfile)
+
+def getCredFromWorkerID():
+    return json.load(open(workerCred))
+
+
+
 def workerMain():
     # worker ID 
-    if (keyexist(workerAPIkeyPath)):
-        workerAPIkey = getUserkey()
-    else:
-        workerAPIkey = setUserkey()
+    if (not keyexist(workerCred)):
+        setCredFromWorkerID()
         pass
-    print "Your Worker ID: " + workerAPIkey
-    # google API secret
-    if (keyexist(GoogleAPISecretPath)):
-        getGoogleAPI()
-    else:
-        setGoogleAPI()
+    workerAPIkey = getCredFromWorkerID()
+
+    print workerAPIkey.subscriber_json
+
+    setGoogleAPI(workerAPIkey.subscriber_json)
+    getGoogleAPI()
+
+    print "Your Worker ID: " + workerAPIkey.worker_id
+
     # Start listening
-    return receive_messages_with_custom_attributes('dfunc',workerAPIkey)
+    return receive_messages_with_custom_attributes('dfunc',workerAPIkey.worker_id)
 
 def reply(message):
     '''send messages back'''
@@ -103,3 +115,4 @@ def reply(message):
 if __name__ == "__main__":
     workerMain()
     #receive_messages("dfunc-bu","what")
+    

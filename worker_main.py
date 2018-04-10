@@ -4,11 +4,10 @@ from time import sleep
 import worker.listener as listener
 from enum import Enum
 
-class mediator(Enum):
-    job_name = "name"
-    file_url = "file"
-    image_dict = "image"
-    user_id = "user"
+job_name = "name"
+file_url = "file"
+image_dict = "image"
+user_id = "user"
 
 # allow keyboard interrup
 import sys, signal
@@ -35,13 +34,13 @@ def main():
         
         message  = listener.workerMain()
 
-        hello = ddocker.DockerContainer(message.image_name['name'],message.image_name['tag'])
+        hello = ddocker.DockerContainer(message.image_dict['name'],message.image_dict['tag'])
         hello.run()
         # hello.registerContainer()
     #	print hello.container.logs()
         print hello.get_log()
 
-        
+
         #print(hello.get_log())
         #print hello.containerInfo()
         hello.stop()
