@@ -79,7 +79,10 @@ def receive_messages_with_custom_attributes(project, subscription_name):
 
 def setCredFromWorkerID():
     PARAMS = raw_input('Input APIkey (Aquire your APIkey at "http://www.dfunc.tech"):')
-    workerAPIkey = requests.get(url = 'http://localhost:8888/worker/', params = '5accf9b83e84b203a54c0c38').json()
+    # workerAPIkey = requests.get(url = 'http://localhost:8888/worker/', params = '5accf9b83e84b203a54c0c38')
+    workerAPIkey = requests.get('http://localhost:8888/worker/'+PARAMS).json()
+
+    #print workerAPIkey
     with open(workerCred, 'w') as outfile:
         json.dump(workerAPIkey, outfile)
 
@@ -95,15 +98,15 @@ def workerMain():
         pass
     workerAPIkey = getCredFromWorkerID()
 
-    print workerAPIkey.subscriber_json
+    # print workerAPIkey['subscriber_json']
 
-    setGoogleAPI(workerAPIkey.subscriber_json)
+    setGoogleAPI(workerAPIkey['subscriber_json'])
     getGoogleAPI()
 
-    print "Your Worker ID: " + workerAPIkey.worker_id
+    # print "Your Worker ID: " + workerAPIkey['worker_id']
 
     # Start listening
-    return receive_messages_with_custom_attributes('dfunc',workerAPIkey.worker_id)
+    return receive_messages_with_custom_attributes('dfunc',workerAPIkey['worker_id'])
 
 def reply(message):
     '''send messages back'''
