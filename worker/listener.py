@@ -29,36 +29,34 @@ from google.cloud import pubsub_v1
 from enum import Enum
 
 # Global Variables
-class path(Enum):
-    GoogleAPISecretPath = './GoogleAPISecret.json'
-    workerAPIkeyPath = './workerAPIkey.json'
 
-class mediator(Enum):
-    job_name = "name"
-    file_url = "file"
-    image_dict = "image"
-    user_id = "user"
+GoogleAPISecretPath = './GoogleAPISecret.json'
+workerAPIkeyPath = "./workerAPIkey.json"
+job_name = "name"
+file_url = "file"
+image_dict = "image"
+user_id = "user"
 
 def setUserkey():
     workerAPIkey = raw_input('Input APIkey (Aquire your APIkey at "http://www.dfunc.tech"):')
-    with open(path.workerAPIkeyPath, 'w') as outfile:
+    with open(workerAPIkeyPath, 'w') as outfile:
         json.dump(workerAPIkey, outfile)
     return workerAPIkey
 
 def setGoogleAPI():
     googleAPIkey = raw_input('Input absolute path (including filename) of Google JSON secret downloaded from "http://www.dfunc.tech" on register):')
-    os.rename(googleAPIkey, path.GoogleAPISecretPath)
-    if (keyexist(path.GoogleAPISecretPath)):
+    os.rename(googleAPIkey, GoogleAPISecretPath)
+    if (keyexist(GoogleAPISecretPath)):
         getGoogleAPI()
 
 def getGoogleAPI():
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath(path.GoogleAPISecretPath)
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath(GoogleAPISecretPath)
 
 def keyexist(key):
     return os.path.exists(key) 
 
 def getUserkey():
-    return json.load(open(path.workerAPIkeyPath))
+    return json.load(open(workerAPIkeyPath))
 
 def receive_messages_with_custom_attributes(project, subscription_name):
     """Receives messages from a pull subscription."""
@@ -81,14 +79,14 @@ def receive_messages_with_custom_attributes(project, subscription_name):
 
 def workerMain():
     # worker ID 
-    if (keyexist(path.workerAPIkeyPath)):
+    if (keyexist(workerAPIkeyPath)):
         workerAPIkey = getUserkey()
     else:
         workerAPIkey = setUserkey()
         pass
     print "Your Worker ID: " + workerAPIkey
     # google API secret
-    if (keyexist(path.GoogleAPISecretPath)):
+    if (keyexist(GoogleAPISecretPath)):
         getGoogleAPI()
     else:
         setGoogleAPI()
