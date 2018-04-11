@@ -65,7 +65,7 @@ def receive_messages_with_custom_attributes(project, subscription_name):
         project, subscription_name)
 
     def callback(message):
-        if (message.file_url!='' and message.image_dict!=''):
+        if (message['']!='' and message['image']!=''):
             return message
         message.ack()
 

@@ -34,7 +34,7 @@ def main():
         
         message  = listener.workerMain()
 
-        hello = ddocker.DockerContainer(message.image_dict['name'],message.image_dict['tag'])
+        hello = ddocker.DockerContainer(message['image']['name'],message['image']['tag'])
         hello.run()
         # hello.registerContainer()
     #	print hello.container.logs()
