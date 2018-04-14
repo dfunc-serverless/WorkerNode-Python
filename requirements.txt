@@ -3,3 +3,4 @@
 docker
 # https://api.mongodb.com/python/current/
 pymongo
+requests
