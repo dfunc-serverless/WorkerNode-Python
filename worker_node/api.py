@@ -94,3 +94,27 @@ class API:
         else:
             raise BadRequestException(
                 "Something went wrong, maybe check the API Key")
+
+    def complete_job(self, job_id, data=None, fail=False):
+        """
+        Registers job with scheduler
+        :param job_id:
+        :param data:
+        :param fail:
+        :return:
+        """
+        path = "/worker/{api_key}/{worker_id}/{job_id}".format(
+            api_key=self.api_key,
+            worker_id=self.worker_id,
+            job_id=job_id
+        )
+        url = self.__get_url(path)
+        if fail:
+            response = self.requests.delete(url, data=data)
+        else:
+            response = self.requests.post(url, json=data)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise BadRequestException(
+                "Something went wrong, maybe check the API Key")
