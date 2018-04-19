@@ -76,7 +76,7 @@ class API:
             raise BadRequestException(
                 "Something went wrong, maybe check the API Key")
 
-    def register_job(self, job_id):
+    def initiate_job(self, job_id):
         """
         Registers job with scheduler
         :param job_id:
