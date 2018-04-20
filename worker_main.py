@@ -48,7 +48,7 @@ def main():
     
     def callback(message):
         print(message)
-        print "Runing docker Task"
+        print("Runing docker Task")
         pass
         # job_id = message['data'] # get job_id from message
         # print job_id
