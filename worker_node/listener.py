@@ -1,4 +1,4 @@
-from google.cloud import pubsub
+from google.cloud import pubsub_v1 as pubsub
 from google.api_core.exceptions import GoogleAPIError
 
 
@@ -28,11 +28,12 @@ class Listener:
     def __check_subscription(self):
         """Checks if subscription exists else creates one"""
         try:
-            return self.subscriber.api.create_subscription(
+            self.subscriber.api.create_subscription(
                 self.subscription_name,
                 self.topic)
         except GoogleAPIError:
-            return self.subscriber.api.get_subscription(self.subscription_name)
+            self.subscriber.api.get_subscription(self.subscription_name)
+        return self.subscriber.subscribe(self.subscription_name)
 
     def listen(self):
         """

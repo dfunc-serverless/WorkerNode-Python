@@ -76,11 +76,10 @@ class Config:
         if name in os.environ:
             val = os.environ[name]
             cls.__cache[name] = val
-            return
+            return val
         elif default is not None:
             return default
-        else:
-            raise KeyError("Setting %s not found in the environment." % name)
+        return None
 
     @classmethod
     def put(cls, name, data):
@@ -89,5 +88,6 @@ class Config:
         :param name: name of the config
         :param data: data to set
         """
-        name = name.upper
+        name = name.upper()
+        print(name, data)
         os.environ[name] = data
