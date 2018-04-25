@@ -1,5 +1,5 @@
-from google.cloud import pubsub_v1 as pubsub
 from google.api_core.exceptions import GoogleAPIError
+from google.cloud import pubsub_v1 as pubsub
 
 
 class Listener:

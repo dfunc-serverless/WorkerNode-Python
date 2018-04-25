@@ -1,5 +1,5 @@
-from json import dumps, loads
 import os
+from json import dumps, loads
 
 
 class Config:
