@@ -1,5 +1,7 @@
 import json
 import multiprocessing as mp
+import traceback
+import sys
 
 from requests import get, post
 
@@ -36,25 +38,35 @@ class WorkerThread:
         :param message:
         :return:
         """
-        job_id = message['data']
-        Log.info("Starting worker, Job ID: %s" % job_id)
-        self.job_id = job_id
-        job_data = self.api_d.initiate_job(job_id)
-        docker_data = job_data["image_dict"]
-        self.docker.set_image_info(docker_data)
-        self.docker.run()
-        ip_address = self.docker.get_ip()
-        url = "http://{ip_address}:8000/".format(ip_address=ip_address)
-        request_data = job_data.setdefault("data", None)
-        if request_data:
-            Log.info("Worker responded with Success.")
-            response = post(url, json=request_data)
-        else:
-            Log.info("Worker Failed")
-            response = get(url)
-        self.api_d.complete_job(
-            job_id, data=response.content, fail=response.ok)
-        message.ack()
+        try:
+            job_id = message.data.decode('ascii')
+            Log.info("Starting worker, Job ID: %s" % job_id)
+            self.job_id = job_id
+            job_data = json.loads(self.api_d.initiate_job(job_id))
+            docker_data = job_data["image"]
+            self.docker.set_image_info(docker_data)
+            self.docker.run()
+            ip_address = self.docker.get_ip()
+            if ip_address is None or ip_address == "":
+                raise Exception("Something went wrong")
+            url = "http://localhost:8000/".format(ip_address=ip_address)
+            request_data = job_data.setdefault("data", None)
+            if request_data:
+                response = post(url, data=request_data)
+            else:
+                response = get(url)
+            self.api_d.complete_job(
+                job_id, data=response.text, fail=response.ok)
+        except Exception as e:
+            Log.error("Error occured while executing shit")
+            Log.error(str(e))
+            if Log.level == 10:
+                traceback.print_exc(file=sys.stdout)
+        finally:
+            self.docker.stop()
+            self.docker.remove()
+            self.api_d.register_worker()
+            message.ack()
 
     def start(self):
         try:
@@ -73,6 +85,7 @@ class WorkerThread:
                     if self.job_id is not None:
                         self.api_d.complete_job(job_id=self.job_id, fail=True)
                     Log.info("Worker Error: %s" % str(e))
+                    self.listener.subscription.close()
                     exit(127)
         except KeyboardInterrupt:
             exit(0)

@@ -1,5 +1,6 @@
 from docker import DockerClient
 from docker import errors
+from time import sleep
 
 from .conf import Config
 
@@ -87,18 +88,19 @@ class DockerThread:
                      self.image_info.command,
                      cpu_period=1000,
                      mem_limit="512m",
-                     detach=True)
+                     detach=True,
+                     ports={'8000/tcp': 8000})
         else:
             raise DockerException("Container already running")
 
     def stop(self):
         """Stops the container"""
-        if self.__run_check():
+        if self.container is not None:
             self.container.stop(timeout=5)
 
     def remove(self):
         """Deletes the container"""
-        if self.__run_check():
+        if self.container is not None:
             self.container.remove(v=True, force=True)
             self.container = None
 
@@ -107,6 +109,11 @@ class DockerThread:
         Get's the IP address of attached container
         :return: IP address or None
         """
-        if self.__run_check():
+        if self.container is not None and self.container.status in ["running",
+                                                                    "created"]:
+            while not bool(
+                    self.container.attrs['NetworkSettings']['IPAddress']):
+                sleep(1)
+                self.container.reload()
             return self.container.attrs['NetworkSettings']['IPAddress']
         return None

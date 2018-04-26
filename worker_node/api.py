@@ -1,3 +1,4 @@
+import json
 import requests
 from requests.adapters import HTTPAdapter
 
@@ -90,7 +91,7 @@ class API:
         url = self.__get_url(path)
         response = self.requests.put(url)
         if response.status_code == 200:
-            return response.json()
+            return json.loads(response.content)
         else:
             raise BadRequestException(
                 "Something went wrong, maybe check the API Key")
@@ -113,8 +114,6 @@ class API:
             response = self.requests.delete(url, data=data)
         else:
             response = self.requests.post(url, json=data)
-        if response.status_code == 200:
-            return response.json()
-        else:
+        if response.status_code != 200:
             raise BadRequestException(
                 "Something went wrong, maybe check the API Key")
